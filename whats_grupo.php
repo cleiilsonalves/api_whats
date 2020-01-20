@@ -45,7 +45,7 @@
     //@param $text [string] [required] - text of the message
     public function welcome($chatId, $noWelcome = false){
         $welcomeString = ($noWelcome) ? "Incorrect command\n" : "WhatsApp Demo Bot PHP\n";
-        $this->sendMessage($chatId,
+        $this->sendMessage($chatId, 
         $welcomeString.
         "Commands:\n".
         "1. chatid - show ID of the current chat\n".
@@ -56,24 +56,29 @@
         "6. geo - get a location\n".
         "7. group - create a group with the bot"
         );
+        //return $response;
     }
 
     //sends Id of the current chat. it is called when the bot gets the command "chatId"
     //@param $chatId [string] [required] - the ID of chat where we send a message
     public function showChatId($chatId){
-        $this->sendMessage($chatId,'ChatID: '.$chatId);
+        $response =  $this->sendMessage($chatId,'ChatID: '.$chatId);
+        return $response;
+
     }
     //sends current server time. it is called when the bot gets the command "time"
     //@param $chatId [string] [required] - the ID of chat where we send a message
     public function time($chatId){
-        $this->sendMessage($chatId,date('d.m.Y H:i:s'));
+        $response = $this->sendMessage($chatId,date('d.m.Y H:i:s'));
+        return $response;
     }
     //sends your nickname. it is called when the bot gets the command "me"
     //@param $chatId [string] [required] - the ID of chat where we send a message
     //@param $name [string] [required] - the "senderName" property of the message
     public function me($chatId,$name){
-      $this->sendMessage($chatId,$name);
-
+        $response = $this->sendMessage($chatId,$name);
+        return $response;
+    
     }
     //sends a file. it is called when the bot gets the command "file"
     //@param $chatId [string] [required] - the ID of chat where we send a message
@@ -96,8 +101,10 @@
             'filename'=>$availableFiles[$format],
             'caption'=>'Get your file '.$availableFiles[$format]
             );
-            $this->sendRequest('sendFile',$data);
+            $response = $this->sendRequest('sendFile',$data);
+
         }
+        return $response;
     }
 
     //sends a voice message. it is called when the bot gets the command "ptt"
@@ -107,7 +114,8 @@
         'audio'=>'https://domain.com/PHP/ptt.ogg',
         'chatId'=>$chatId
         );
-        $this->sendRequest('sendAudio',$data);
+        $response= $this->sendRequest('sendAudio',$data);
+        return $response;
     }
 
     //sends a location. it is called when the bot gets the command "geo"
@@ -126,19 +134,22 @@
     //creates a group. it is called when the bot gets the command "group"
     //@param chatId [string] [required] - the ID of chat where we send a message
     //@param author [string] [required] - "author" property of the message
-    public function group($author){
+    public function group($author, $text){
         $phone = str_replace('@c.us','',$author);
         $data = array(
         'groupName'=>'DESENV - IEPTB-BR',
         'phones'=>array($phone),
-        'messageText'=>'It is your group. Enjoy'
+        'messageText'=> $text
         );
         $response=   $this->sendRequest('group',$data);
         return  $response;
     }
 
     public function sendMessage($chatId, $text){
-        $data = array('chatId'=>$chatId,'body'=>$text);
+        $data = array(
+            'phone'=>$chatId,
+            'body'=>$text
+        );
         $response= $this->sendRequest('message',$data);
         return  $response;
     }
@@ -163,10 +174,13 @@
 //execute the class when this file is requested by the instance
 $a = new whatsAppBot();
 
-$chatId ='5511985586232';
-$atuor ='5511985586232';
-echo $a->group($atuor);
-
+$chatId ='5511986586232';
+$atuor  ='5511986586232';
+$i = 7;
+$test='nao e meu numero';
+//echo $a->group($atuor, $test);
+//echo $a->sendMessage($chatId, $test);
  //echo $a->welcome($chatId);
  // echo $a->geo($chatId);
+ echo $a->showChatId($chatId);
                   
